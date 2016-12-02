@@ -18,7 +18,7 @@ import org.opencv.imgproc.*;
 import com.atul.JavaOpenCV.Imshow;
 import instrumentation.EventLog;
 import instrumentation.EventLog.*;
-import instrumentation.ScreenCaptures;
+import instrumentation.ImageLogging;
 
 
 public abstract class TargetTracker {
@@ -241,7 +241,7 @@ public abstract class TargetTracker {
 		im.showImage(targetSearchImage);
 		
 		// Save the image for post-run analysis.
-		ScreenCaptures.save (targetSearchImage);
+		ImageLogging.save (targetSearchImage);
 
 		return targetStatus;
 	}
