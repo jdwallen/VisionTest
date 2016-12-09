@@ -17,8 +17,9 @@ import org.opencv.core.Mat;
 import org.opencv.imgcodecs.Imgcodecs; //v 3.1.0
 //import org.opencv.highgui.*; // v 2.4.13
 
-import instrumentation.EventLog;
-import instrumentation.EventLog.*;
+import instrumentation.EventLogging;
+import instrumentation.EventLogging.*;
+import instrumentation.ImageLogging;
 
 public class ImageProcessing {
 
@@ -29,15 +30,29 @@ public class ImageProcessing {
 		System.loadLibrary( Core.NATIVE_LIBRARY_NAME );
 	}
 	
+	public static EventLogging eventLog = new EventLogging();
+	public static ImageLogging imageLog = new ImageLogging();
+	
 	// Declare a target processor for each target.
 	private static CastleTowerGoalTracker castleTowerTgt = 
 			new CastleTowerGoalTracker();
 	
 	public static void processCameraImages () {
 		
+		boolean useCamera = false;
+		Camera axisCamera = new Camera();
+		
+		// Camera test
+		if (useCamera) {
+			axisCamera.PreInit();
+			axisCamera.Init();
+			axisCamera.SetCameraForOps();
+		}
+		
+		
 		Mat cameraImage; // An image from the camera
 		
-		EventLog.logNormalEvent(NORMALEVENTS.START_PROCESS_CAMERA_IMAGES, "" );
+		eventLog.logNormalEvent(NORMALEVENTS.START_PROCESS_CAMERA_IMAGES, "" );
 		//int i = ContourTests.computeMomentScore();
 		// Get the image from the camera.
 		// For now, read a test image.
@@ -50,6 +65,9 @@ public class ImageProcessing {
 
         cameraImage = Imgcodecs.imread("../VisionTest/src/Vision/Images/real_field/205.jpg",Imgcodecs.CV_LOAD_IMAGE_COLOR);
         validCastleGoalTgt = castleTowerTgt.trackTarget(cameraImage);
+        
+        eventLog.saveEventLog();
+        imageLog.saveImageLog();
 	}
 
 		//System.loadLibrary( Core.NATIVE_LIBRARY_NAME );

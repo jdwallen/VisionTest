@@ -13,8 +13,9 @@ import java.util.ArrayList;
 import org.opencv.core.Mat;
 import org.opencv.core.MatOfPoint;
 import org.opencv.core.Rect;
-import instrumentation.EventLog;
-import instrumentation.EventLog.*;
+import instrumentation.EventLogging;
+import instrumentation.EventLogging.*;
+import Vision.ImageProcessing.*;
 
 //import org.opencv.highgui.*; // v2.4.13
 
@@ -40,7 +41,8 @@ public class CastleTowerGoalTracker extends TargetTracker {
 	}
 */	
 	
-	
+	// Invokes the GRIP image processing pipeline and returns a list
+	// of contours that may include the desired target.
 	ArrayList<MatOfPoint> invokeImageProcessingPipeline (Mat targetImage) {
     	m_pipeline.setsource0(targetImage);
 		m_pipeline.process();
@@ -60,14 +62,14 @@ public class CastleTowerGoalTracker extends TargetTracker {
 		scores.add(coverageScore);
 
 		if (coverageScore < MIN_VALID_COVERAGE_AREA_SCORE) {
-			EventLog.logInterestingEvent(
+			ImageProcessing.eventLog.logInterestingEvent(
 							  INTERESTINGEVENTS.CONTOUR_FAILED_COVERAGE_AREA_TEST,
 							  "ContourID= " + contourID + " Score= " + coverageScore);
 			
 			return scores;
 		}
 		
-		EventLog.logInterestingEvent(
+		ImageProcessing.eventLog.logInterestingEvent(
 				  		  INTERESTINGEVENTS.CONTOUR_PASSED_COVERAGE_AREA_TEST,
 				  		  "ContourID= " + contourID + " Score= " + coverageScore);
 		
@@ -79,13 +81,13 @@ public class CastleTowerGoalTracker extends TargetTracker {
 
 		if (aspectScore < MIN_VALID_ASPECT_RATIO_SCORE) {
 
-			EventLog.logInterestingEvent( 
+			ImageProcessing.eventLog.logInterestingEvent( 
 					  		INTERESTINGEVENTS.CONTOUR_FAILED_ASPECT_RATIO_TEST,
 					  		"ContourID= " + contourID + " Score= " + aspectScore);
 			return scores;
 		}
 
-		EventLog.logInterestingEvent(
+		ImageProcessing.eventLog.logInterestingEvent(
 						  INTERESTINGEVENTS.CONTOUR_PASSED_ASPECT_RATIO_TEST,
 				          "ContourID= " + contourID + " Score= " + aspectScore);
 		

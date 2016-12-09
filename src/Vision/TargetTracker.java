@@ -16,8 +16,8 @@ import java.util.ArrayList;
 import org.opencv.core.*;
 import org.opencv.imgproc.*;
 import com.atul.JavaOpenCV.Imshow;
-import instrumentation.EventLog;
-import instrumentation.EventLog.*;
+import instrumentation.EventLogging;
+import instrumentation.EventLogging.*;
 import instrumentation.ImageLogging;
 
 
@@ -81,6 +81,7 @@ public abstract class TargetTracker {
 		Imshow       im                 = new Imshow("Target Contours");
 		int	         bestScore          = 0;
 		int          bestContourIndex   = 0;
+		int			 bestContourID      = 0;
 		Rect         bestRect           = new Rect();
 		TargetStatus targetStatus;
 
@@ -92,7 +93,7 @@ public abstract class TargetTracker {
 
 		// For each possible contour, save the index of the contour with the best score (it
     	// most likely matches the desired target).
-    	EventLog.logNormalEvent(NORMALEVENTS.PROCESSING_CONTOURS, 
+    	ImageProcessing.eventLog.logNormalEvent(NORMALEVENTS.PROCESSING_CONTOURS, 
     					  		"Num Contours: " + potTargetContours.size());
     	
     	// for each contour
@@ -151,19 +152,20 @@ public abstract class TargetTracker {
     					bestRect         = rect.clone();
     					bestScore        = scores.get(0);
     					bestContourIndex = i;
+    					bestContourID    = uniqueContourID;
     					
-            			EventLog.logInterestingEvent
+    					ImageProcessing.eventLog.logInterestingEvent
 			   				(INTERESTINGEVENTS.CONTOUR_ACCEPTED_AND_IS_NEW_BEST, 
 			   				 "Contour ID = " + uniqueContourID + "  Score= " + totalScore);    				}
     				else
-            			EventLog.logInterestingEvent
+    					ImageProcessing.eventLog.logInterestingEvent
 			   				(INTERESTINGEVENTS.CONTOUR_ACCEPTED_BUT_NOT_BEST, 
 			   				 "Contour ID = " + uniqueContourID + "  Score= " + totalScore);
 			
 
     			}
     		} else
-    			EventLog.logInterestingEvent
+    			ImageProcessing.eventLog.logInterestingEvent
     			   (INTERESTINGEVENTS.CONTOUR_REJECTED_TOO_FEW_POINTS, 
     				"Contour ID = " + uniqueContourID + "  Num Points: " + contouri.rows());
     	}
@@ -241,7 +243,7 @@ public abstract class TargetTracker {
 		im.showImage(targetSearchImage);
 		
 		// Save the image for post-run analysis.
-		ImageLogging.save (targetSearchImage);
+		ImageProcessing.imageLog.save (targetSearchImage, bestContourID);
 
 		return targetStatus;
 	}
