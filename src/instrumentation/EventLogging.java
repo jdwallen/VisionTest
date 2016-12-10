@@ -70,7 +70,7 @@ public class EventLogging extends Instrumentation {
 	// Format string for time and date.
 	private final SimpleDateFormat dateFormat = new SimpleDateFormat ("yyyy.MM.dd hh:mm:ss.ssssss");		
 
-	boolean loggingAvailable() {
+	public boolean loggingAvailable() {
 		return logAvailable;
 	}
 

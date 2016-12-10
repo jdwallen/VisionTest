@@ -4,7 +4,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 
 public class Dashboard {
-	
+
 	/* 
 	 * Writing to Basic tab of the Labview Dashboard: 
 	 * 

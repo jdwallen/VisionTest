@@ -1,6 +1,9 @@
 /**********************************************************************
  * IMAGE LOGGING
- * This class allows camera images to be saved for future debug.
+ * 
+ * This class allows camera images to be saved for future debug. The
+ * Instrumentation class provides the path to where the images should
+ * be written.
  **********************************************************************/
 
 package instrumentation;
@@ -15,43 +18,44 @@ import org.opencv.imgcodecs.Imgcodecs;
 
 public class ImageLogging extends Instrumentation {
 
-	private boolean logAvailable = false;
-	private final int MAXLISTENTRIES = 10000;
+	private boolean   logAvailable = false;
+	private final int MAX_LIST_ENTRIES = 10000;
 	
 	public ImageLogging (){
 		super();
+		logAvailable = instrumentationAvailable();
 	}
 	
 	// Define the list of images to save.  Images are stored locally to save throughput.  The
 	// saveImages can be invoked (say, after a match is over) to dump the images
 	// to a storage device.
-	private List<Mat>     imageList     = new ArrayList<Mat>(MAXLISTENTRIES);
+	private List<Mat>     imageList     = new ArrayList<Mat>(MAX_LIST_ENTRIES);
 	
 	// Define a list of times at which the image was created.  These are used in the creation
 	// of the file name when the image is written.  This time can assist in correlating the
 	// image to events in the event log.
-	private List<String>  timeList      = new ArrayList<String>(MAXLISTENTRIES);
+	private List<String>  timeList      = new ArrayList<String>(MAX_LIST_ENTRIES);
 	
 	// Define a list of contour IDs.  These are used in the creation
 	// of the file name when the image is written.  This contour ID can assist in correlating the
 	// image to events in the event log.
-	private List<Integer> contourIDList = new ArrayList<Integer>(MAXLISTENTRIES);
+	private List<Integer> contourIDList = new ArrayList<Integer>(MAX_LIST_ENTRIES);
 	
-	boolean loggingAvailable() {
+	public boolean loggingAvailable() {
 		return logAvailable;
 	}
 	
-	// Save an image to the imageList.
+	// Save an image to the imageList, along with lists for supporting data.
 	public void save (Mat image, int contourID) {
 		
-		SimpleDateFormat dateFormat = new SimpleDateFormat ("hh.mm.ssssss");
-		Date date       = new Date();
 		imageList.add(image);
 		contourIDList.add(contourID);
+		SimpleDateFormat dateFormat = new SimpleDateFormat ("hh.mm.ssssss");
+		Date date                   = new Date();
 		timeList.add(dateFormat.format(date));
 	}
 	
-	// This method dumps the imageList to TBD.
+	// This method dumps the imageList.
 	public void saveImageLog () {
 		
 		// On the roboRIO, users should store files to /home/lvuser or subfolders created there. Or,
@@ -62,7 +66,7 @@ public class ImageLogging extends Instrumentation {
 
 			// Write the event log someplace.
 			for (int i = 0; i < imageList.size(); i++) {
-				Imgcodecs.imwrite(dataDirectoryName() + "\\" + i + " " +timeList.get(i) + " " + "C" + contourIDList.get(i) + ".jpg",
+				Imgcodecs.imwrite(dataDirectoryName() + "\\" + i + " " + timeList.get(i) + " " + "C" + contourIDList.get(i) + ".jpg",
 						imageList.get(i));
 			}
 

@@ -1,4 +1,4 @@
-package com.atul.JavaOpenCV;
+package instrumentation;
 
 /*
  * Author: ATUL
